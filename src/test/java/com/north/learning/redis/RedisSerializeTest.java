@@ -28,6 +28,9 @@ public class RedisSerializeTest {
     @Autowired
     private RedisTemplate<String, PersonDto> genericToStringRedisTemplate;
 
+    @Autowired
+    private RedisTemplate<String, Object> genericFastToJsonRedisTemplate;
+
     @Test
     void should_set_key_value_success_when_use_default_redis_template() {
         redisTemplate.opsForValue().set("what we learning", "redis");
@@ -69,6 +72,13 @@ public class RedisSerializeTest {
         testSerialTime(genericJackson2JsonRedisSerializer, personDto, "jackson");
         testSerialTime(jdkSerializationRedisSerializer, personDto, "jdk");
 
+    }
+
+    @Test
+    void should_save_object_success_by_fastjson_serializer() {
+        genericFastToJsonRedisTemplate.opsForValue().set("person", new PersonDto("redis", 18));
+        PersonDto person = (PersonDto) genericFastToJsonRedisTemplate.opsForValue().get("person");
+        assertEquals("redis", person.getName());
     }
 
     private void testSerialTime(RedisSerializer redisSerializer, PersonDto personDto, String serializeName) {

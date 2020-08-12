@@ -39,4 +39,13 @@ public class RedisConfiguration {
         return redisTemplate;
     }
 
+    @Bean(name = "genericJacksonToJson")
+    RedisTemplate<String, Object> redisGenericToJsonTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(RedisSerializer.string());
+        redisTemplate.setValueSerializer(RedisSerializer.json());
+        return redisTemplate;
+    }
+
 }
